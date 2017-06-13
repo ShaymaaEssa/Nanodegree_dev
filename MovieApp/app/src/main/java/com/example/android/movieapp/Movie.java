@@ -3,6 +3,9 @@ package com.example.android.movieapp;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Created by MOSTAFA on 01/04/2017.
  */
@@ -33,6 +36,8 @@ public class Movie implements Parcelable{
         this.vote_average = vote_average;
         this.backdrop_path = backdrop_path;
     }
+
+
 
     public String getOverview() {
         return overview;
@@ -93,6 +98,7 @@ public class Movie implements Parcelable{
         this.title = data[4];
         this.vote_average = data[5];
         this.backdrop_path = data[6];
+
     }
 
     @Override

@@ -104,7 +104,7 @@ public class MoviesContentProvider extends ContentProvider {
                 String id = uri.getPathSegments().get(1);
                 String mSelection = MoviesContract.MovieDetailEntry.COLUMN_ID + " =?";
                 String[] mSelectionArgs = new String[]{id};
-                num = db.delete(MoviesContract.MovieDetailEntry.TABLE_NAME, mSelection, selectionsArgs);
+                num = db.delete(MoviesContract.MovieDetailEntry.TABLE_NAME, mSelection, mSelectionArgs);
                 break;
             default:
                 throw new UnsupportedOperationException("unknown uri " + uri);

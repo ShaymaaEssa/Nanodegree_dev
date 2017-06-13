@@ -1,6 +1,7 @@
 package com.example.android.movieapp;
 
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
@@ -16,7 +17,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -56,9 +56,17 @@ public class MainFragment extends Fragment implements RVMainScreenAdapter.RVItem
     private SQLiteDatabase mDb;
     private MoviesDbHelper dbHelper;
 
+    MoviePosterClickListener moviePosterClickListener;
+
 
     public MainFragment() {
         // Required empty public constructor
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        moviePosterClickListener = (MoviePosterClickListener)getActivity();
     }
 
 
@@ -83,7 +91,11 @@ public class MainFragment extends Fragment implements RVMainScreenAdapter.RVItem
 
         preferences = PreferenceManager.getDefaultSharedPreferences(getActivity());
         preferences.registerOnSharedPreferenceChangeListener(this);
-        getMovieData();
+
+        if (getActivity().findViewById(R.id.fragment_mainactivity_detailfragment)!= null){
+            rv_movieGrid.findViewHolderForAdapterPosition(0).itemView.performClick();
+        }
+
 
         return view;
     }
@@ -95,6 +107,11 @@ public class MainFragment extends Fragment implements RVMainScreenAdapter.RVItem
         preferences.unregisterOnSharedPreferenceChangeListener(this);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        getMovieData();
+    }
 
     public void getMovieData() {
 
@@ -117,8 +134,9 @@ public class MainFragment extends Fragment implements RVMainScreenAdapter.RVItem
                     Movie movie = new Movie(poster_path, overview, release_date, id, title, vote_average, backdrop_path);
                     movies.add(movie);
 
-                    adapter.setMoviesData(movies);
+
                 }
+                adapter.setMoviesData(movies);
             } catch (Exception e) {
                 Log.e("Main Fragment", "failed to asyc load data");
                 e.printStackTrace();
@@ -148,6 +166,7 @@ public class MainFragment extends Fragment implements RVMainScreenAdapter.RVItem
                                 String title = currentObject.getString("title");
                                 String vote_average = currentObject.getString("vote_average");
                                 String backdrop_path = currentObject.getString("backdrop_path");
+
                                 Movie movie = new Movie(poster_path, overview, release_date, id, title, vote_average, backdrop_path);
                                 movies.add(movie);
                             }
@@ -178,10 +197,9 @@ public class MainFragment extends Fragment implements RVMainScreenAdapter.RVItem
 
     @Override
     public void onListItemClick(Movie movie) {
-        Intent intent = new Intent(getActivity(), DetailActivity.class);
-        intent.putExtra(DetailActivity.MOVIE_CLICKED, movie);
-        startActivity(intent);
-
+        if (moviePosterClickListener != null){
+            moviePosterClickListener.moviePosterClicked(movie);
+        }
     }
 
     @Override
